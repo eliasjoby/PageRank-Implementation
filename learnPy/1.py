@@ -16,5 +16,7 @@ class Person2:
 
 p2=Person2("John",23)
 
+print('\n')
+
 print(p2)
 
