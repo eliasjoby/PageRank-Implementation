@@ -191,13 +191,15 @@ class BaseGraph(ABC):
     @abstractmethod
     def __init__(self):
         """Initialize this graph object."""
-        # add your code here
+        self.node_dict={} #node id->node obj
+        self.edge_set=set() #set of edge objects
+        self.adj={} # node id -> adjNode id
 
     def __len__(self):
         """Return the number of nodes in the graph."""
-        # add your code here
+        return len(self.node_dict)
 
-    def add_node(self, node_id, **attributes):
+    def add_node(self, node_id, **prop):
         """Add a node to this graph.
 
         Requires that node_id, the unique identifier for the node, is
@@ -206,37 +208,59 @@ class BaseGraph(ABC):
         attributes. Raises a GraphError if a node already exists with
         the given ID.
         """
-        # add your code here
+        if node_id in self.node_dict.keys():
+            raise GraphError(f"Node {node_id} already exists")
+        self.node_dict[node_id]=Node(node_id,attributes=prop)
+        self.adj[node_id]=[]
 
     def node(self, node_id):
         """Return the Node object for the node whose ID is node_id.
 
         Raises a GraphError if the node ID is not in the graph.
         """
-        # add your code here
+        if node_id not in self.node_dict:
+            raise GraphError(f"Node {node_id} not found")
+        return self.node_dict[node_id]
 
     def nodes(self):
         """Return a list of all the Nodes in this graph.
 
         The nodes are sorted by increasing node ID.
         """
-        # add your code here
+        list_nodes=[]
+        for x in sorted(self.node_dict):
+            list_nodes.append(x)
+        return list_nodes
 
-    def add_edge(self, node1_id, node2_id, **attributes):
+    def add_edge(self, node1_id, node2_id, **prop):
         """Add an edge between the nodes with the given IDs.
 
         The keyword arguments are optional edge attributes. Raises a
         GraphError if either node is not found, or if the graph
         already contains an edge between the two nodes.
         """
-        # add your code here
+        if [node1_id,node2_id] in self.edge_set:
+            raise GraphError(f"The edge ({node1_id},{node2_id}) already exists")
+        
+        self.edge_set.add(Edge(node1_id,node2_id,prop))
+        self.adj[node1_id].append(node2_id)
 
     def edge(self, node1_id, node2_id):
         """Return the Edge object for the edge between the given nodes.
 
         Raises a GraphError if the edge is not in the graph.
         """
-        # add your code here
+        flag=0
+        res
+        for p in self.edge_set:
+           (n1,n2)=p.nodes()
+           if((node1_id,node2_id)==(n1,n2)):
+               flag=1
+               res=p
+               break
+        if flag==0:
+            raise GraphError(f"Edge ({node1_id},{node2_id}) already exists")
+        return res
 
     def edges(self):
         """Return a list of all the edges in this graph.
@@ -244,7 +268,11 @@ class BaseGraph(ABC):
         The edges are sorted in increasing, lexicographic order of the
         IDs of the two nodes in each edge.
         """
-        # add your code here
+        final=[]
+        for e in self.edge_set:
+            final.append(e.nodes())
+        final.sort()
+        return final
 
     def __getitem__(self, key):
         """Return the Node or Edge corresponding to the given key.
@@ -254,7 +282,30 @@ class BaseGraph(ABC):
         corresponding to the edge between the two nodes. Raises a
         GraphError if the node IDs or edge are not in the graph.
         """
-        # add your code here
+        ans
+        if isinstance(key,tuple) and len(key)>1:
+            flag=0
+            for e in self.edge_set:
+                if(e.nodes()==key):
+                    flag=1
+                    ans=e
+                    break
+            if(flag):
+                return ans
+            else:
+                raise GraphError(f"The given pair of edges ({key[0]},{key[1]}) does not exist")
+        else:
+            flag=0
+            ans
+            for x,y in self.node_dict.items():
+                if(x==key):
+                    flag=1
+                    ans=y
+                    break
+            if(flag):
+                return ans
+            else:
+                raise GraphError(f"The given node {key} does not exist")
 
     def __contains__(self, item):
         """Return whether the given node or edge is in the graph.
@@ -264,7 +315,13 @@ class BaseGraph(ABC):
         True if there is an edge corresponding to the two nodes.
         Otherwise, returns False.
         """
-        # add your code here
+        if isinstance(item,tuple) and len(item)>1:
+            for e in self.edge_set:
+                if(item==e.nodes()):
+                    return True
+            return False
+        else:
+            return item in self.node_dict.keys()
 
     def __str__(self):
         """Return a string representation of the graph.
