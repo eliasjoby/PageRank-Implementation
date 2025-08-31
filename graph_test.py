@@ -1,8 +1,7 @@
 import graph
 
 def undirected_test():
-    ugraph = graph.read_graph_from_csv('characters-nodes.csv',
-                                       'characters-edges.csv')
+    ugraph = graph.read_graph_from_csv('data/characters-nodes.csv','data/characters-edges.csv')
     assert ugraph.degree('0') == 6
     assert '0' in ugraph
     assert len(ugraph) == 10
