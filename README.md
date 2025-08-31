@@ -32,7 +32,7 @@ The focus is on **understanding and applying PageRank**, highlighting its algori
 PageRank assigns a score to each node based on the structure of the incoming links. Mathematically, the PageRank $PR(u)$ of a node $u$ is defined as:
 
 $$
-PR(u) = \frac{1 - d}{N} + d \sum_{v \in B_u} \frac{PR(v)}{L(v)}
+PR(u) = \frac{1 - d}{N} + d \sum_{v \in B_u} \frac{PR(v)}{L(v)} + d \sum_{w \in S} \frac{PR(w)}{N}
 $$
 
 Where:
@@ -41,7 +41,8 @@ Where:
 * `N` is the total number of nodes
 * `B_u` is the set of nodes linking to `u`
 * `L(v)` is the out-degree of node `v`
-* Dangling nodes contribute their rank evenly across all nodes
+* `S` is the set of **sink nodes** (nodes with no outgoing edges)
+* The last term distributes the rank of all sink nodes evenly across all nodes
 
 The algorithm iteratively updates ranks until convergence or a fixed number of iterations.
 
@@ -113,7 +114,7 @@ python pagerank_test.py
 ## Notes
 
 * PageRank values **always sum to 1**.
-* Dangling nodes distribute rank evenly.
+* Dangling nodes distribute rank evenly across all nodes.
 * Algorithm converges with sufficient iterations.
 
 ## CSV Format
