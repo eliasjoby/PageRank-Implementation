@@ -47,6 +47,31 @@ def test_single_node():
     assert abs(ranks[42] - 1.0) < 0.001, f"Expected 1.0, got {ranks[42]:.6f}"
     print("✓ Single node test passed\n")
 
+def test_triangle_graph():
+    print("Testing symmetric triangle...")
+    
+    g = graph.DirectedGraph()
+    g.add_node(0)
+    g.add_node(1)
+    g.add_node(2)
+    g.add_edge(0, 1)
+    g.add_edge(1, 2)
+    g.add_edge(2, 0)
+    
+    ranks = pagerank.pagerank(g, num_iterations=50)
+    print(f"Triangle ranks: {ranks}")
+    
+    # All nodes should have equal PageRank (≈ 1/3)
+    expected = 1.0 / 3
+    for node_id in [0, 1, 2]:
+        assert abs(ranks[node_id] - expected) < 0.001, \
+            f"Node {node_id}: got {ranks[node_id]:.6f}, expected {expected:.6f}"
+    
+    total = sum(ranks.values())
+    assert abs(total - 1.0) < 0.001, f"Sum should be 1.0, got {total:.6f}"
+    print(f"Sum: {total:.6f}")
+    print("✓ Triangle test passed\n")
+
 
 def test_dangling_node():
     print("Testing dangling node...")
