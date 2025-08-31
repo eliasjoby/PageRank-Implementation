@@ -1,7 +1,6 @@
 import graph
 import pagerank
 
-
 def test_doctest_example():
     print("Testing doctest example...")
     
@@ -19,7 +18,6 @@ def test_doctest_example():
     print(f"After 1 iteration: {ranks_1}")
     print(f"After 40 iterations: {ranks_40}")
     
-    # Test sum property (most important)
     total_1 = sum(ranks_1.values())
     total_40 = sum(ranks_40.values())
     print(f"Sum after 1 iteration: {total_1:.6f}")
@@ -28,7 +26,6 @@ def test_doctest_example():
     assert abs(total_1 - 1.0) < 0.001, f"Sum should be 1.0, got {total_1:.6f}"
     assert abs(total_40 - 1.0) < 0.001, f"Sum should be 1.0, got {total_40:.6f}"
     
-    # All ranks should be positive
     assert all(rank > 0 for rank in ranks_1.values()), "All ranks should be positive"
     assert all(rank > 0 for rank in ranks_40.values()), "All ranks should be positive"
     
@@ -60,8 +57,6 @@ def test_triangle_graph():
     
     ranks = pagerank.pagerank(g, num_iterations=50)
     print(f"Triangle ranks: {ranks}")
-    
-    # All nodes should have equal PageRank (≈ 1/3)
     expected = 1.0 / 3
     for node_id in [0, 1, 2]:
         assert abs(ranks[node_id] - expected) < 0.001, \
@@ -82,12 +77,10 @@ def test_dangling_node():
     g.add_node(2)
     g.add_edge(0, 1)
     g.add_edge(1, 2)
-    # Node 2 is dangling (no outgoing edges)
     
     ranks = pagerank.pagerank(g, num_iterations=20)
     print(f"Dangling node ranks: {ranks}")
     
-    # Node 2 should have the highest rank since it's a sink
     assert ranks[2] > ranks[0] and ranks[2] > ranks[1], \
         "Dangling node should have highest PageRank"
     
@@ -109,7 +102,6 @@ def test_two_node_cycle():
     ranks = pagerank.pagerank(g, num_iterations=20)
     print(f"Two-node cycle ranks: {ranks}")
     
-    # Should be equal (0.5 each)
     assert abs(ranks[0] - 0.5) < 0.001, f"Node 0: got {ranks[0]:.6f}, expected 0.5"
     assert abs(ranks[1] - 0.5) < 0.001, f"Node 1: got {ranks[1]:.6f}, expected 0.5"
     
@@ -159,7 +151,6 @@ def run_all_tests():
         print("All tests passed!")
     else:
         print("Some tests failed - check implementation")
-
 
 if __name__ == '__main__':
     run_all_tests()

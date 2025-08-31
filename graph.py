@@ -2,7 +2,6 @@ import csv
 import doctest
 from abc import ABC, abstractmethod
 
-
 class GraphError(Exception):
 
     def __init__(self, message=''):
@@ -13,7 +12,6 @@ class GraphError(Exception):
         return self.message
 
     def __repr__(self):
-        # canonical string representation of the error
         return f"GraphError({repr(str(self))})"
 
 
@@ -87,13 +85,11 @@ class BaseGraph(ABC):
         if node2_id not in self._nodes:
             raise GraphError(f"Node {node2_id} not found")
         
-        # Check if edge already exists
         for edge in self._edges:
             n1, n2 = edge.nodes()
             if n1.identifier() == node1_id and n2.identifier() == node2_id:
                 raise GraphError(f"Edge ({node1_id},{node2_id}) already exists")
 
-        # Create and add the edge
         node1 = self._nodes[node1_id]
         node2 = self._nodes[node2_id]
         new_edge = Edge(node1, node2, **prop)
@@ -118,7 +114,6 @@ class BaseGraph(ABC):
         except GraphError:
             pass
         
-        # Try edge lookup
         try:
             return self.edge(key[0], key[1])
         except (GraphError, TypeError, IndexError):
@@ -127,11 +122,9 @@ class BaseGraph(ABC):
         raise GraphError(f"Key {key} not found")
 
     def __contains__(self, item):
-        # Try node lookup first
         if item in self._nodes:
             return True
         
-        # Try edge lookup
         try:
             self.edge(item[0], item[1])
             return True
@@ -161,14 +154,12 @@ class UndirectedGraph(BaseGraph):
         if node2_id not in self._nodes:
             raise GraphError(f"Node {node2_id} not found")
         
-        # Check if edge already exists (in either direction)
         for edge in self._edges:
             n1, n2 = edge.nodes()
             if ((n1.identifier() == node1_id and n2.identifier() == node2_id) or
                 (n1.identifier() == node2_id and n2.identifier() == node1_id)):
                 raise GraphError(f"Edge ({node1_id},{node2_id}) already exists")
 
-        # Create and add both directions of the edge
         node1 = self._nodes[node1_id]
         node2 = self._nodes[node2_id]
         edge1 = Edge(node1, node2, **prop)
